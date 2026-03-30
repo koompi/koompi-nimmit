@@ -1,0 +1,42 @@
+# Secrets
+.env
+.env.*
+*.pem
+*.key
+credentials.json
+secrets/
+
+# Dependencies
+node_modules/
+.bun/
+__pycache__/
+.venv/
+
+# Build artifacts
+dist/
+build/
+*.o
+*.so
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+
+# Temp
+tmp/
+temp/
+*.tmp
+
+# OpenClaw runtime
+.openclaw/
+openclaw.json

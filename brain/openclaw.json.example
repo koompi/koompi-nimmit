@@ -1,0 +1,44 @@
+{
+  "name": "{{AGENT_NAME_LOWER}}",
+  "version": "1.0.0",
+  "company": "{{COMPANY}}",
+  "agent": {
+    "name": "{{AGENT_NAME}}",
+    "handle": "@{{BOT_USERNAME}}"
+  },
+  "owner": {
+    "name": "{{OWNER_NAME}}",
+    "id": "{{OWNER_ID}}"
+  },
+  "locale": {
+    "timezone": "{{TIMEZONE}}",
+    "language": "{{LANGUAGE}}"
+  },
+  "brain": {
+    "root": "./",
+    "soul": "SOUL.md",
+    "identity": "IDENTITY.md",
+    "agents": "AGENTS.md",
+    "tools": "TOOLS.md",
+    "heartbeat": "HEARTBEAT.md",
+    "workflow": "WORKFLOW.md",
+    "memory": "memory/",
+    "topics": "topics/"
+  },
+  "integrations": {
+    "messaging": {
+      "platform": "telegram",
+      "bot_username": "{{BOT_USERNAME}}"
+    },
+    "code": {
+      "provider": "github",
+      "org": ""
+    }
+  },
+  "heartbeat": {
+    "daily_sync": "09:00",
+    "weekly_intel": "monday",
+    "monthly_review": "first_monday",
+    "memory_consolidation": "18:00"
+  }
+}
