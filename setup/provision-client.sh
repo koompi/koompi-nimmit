@@ -4,16 +4,15 @@ set -euo pipefail
 # provision-client.sh — KOOMPI internal: spin up a new client instance
 # Usage: bash provision-client.sh --name "ClientName" --token "BOT_TOKEN" --vps-ip "1.2.3.4"
 
-set -euo pipefail
-
 REPO="rithythul/koompi-nimmit"
 BRANCH="main"
 INSTALL_URL="https://raw.githubusercontent.com/${REPO}/${BRANCH}/install.sh"
 
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; CYAN='\033[0;36m'; BOLD='\033[1m'; NC='\033[0m'
-info() { echo -e "${CYAN}[INFO]${NC}  $*"; }
-ok()   { echo -e "${GREEN}[ OK ]${NC}  $*"; }
-die()  { echo -e "${RED}[ERR]${NC}   $*" >&2; exit 1; }
+info()  { echo -e "${CYAN}[INFO]${NC}  $*"; }
+ok()    { echo -e "${GREEN}[ OK ]${NC}  $*"; }
+die()   { echo -e "${RED}[ERR]${NC}   $*" >&2; exit 1; }
+step()  { echo -e "\n${BOLD}${CYAN}▸${NC} ${BOLD}$*${NC}"; }
 
 # ─── Args ──────────────────────────────────────────────────────────────
 

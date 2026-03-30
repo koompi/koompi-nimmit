@@ -70,9 +70,13 @@ HELP
             exit 0 ;;
         -*)
             # Support --flag=value syntax
-            key="${1%%=*}"; val="${1#*=}"
-            shift
-            set -- "$key" "$val" "$@"
+            if [[ "$1" == *=* ]]; then
+                key="${1%%=*}"; val="${1#*=}"
+                shift
+                set -- "$key" "$val" "$@"
+            else
+                die "Unknown option: $1"
+            fi
             ;;
         *)
             if [[ -z "$AGENT_NAME" ]]; then
@@ -104,12 +108,12 @@ detect_os() {
         OS="arch"
         PKG_INSTALL="sudo pacman -S --noconfirm --quiet"
         PKG_LIST="git chromium curl unzip base-devel"
-        AUTLOGIN_SVC="getty@tty1"
+        AUTOLOGIN_SVC="getty@tty1"
     elif [[ -f /etc/debian_version ]] || grep -qi ubuntu /etc/os-release 2>/dev/null; then
         OS="ubuntu"
         PKG_INSTALL="sudo DEBIAN_FRONTEND=noninteractive apt-get install -y"
         PKG_LIST="git chromium-browser curl unzip xvfb"
-        AUTLOGIN_SVC="getty@tty1"
+        AUTOLOGIN_SVC="getty@tty1"
     else
         die "Unsupported OS. Requires Ubuntu 22.04+ or KOOMPI OS (Arch-based)."
     fi
