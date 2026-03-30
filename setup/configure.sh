@@ -65,13 +65,13 @@ echo ""
 ALLOWED_IDS="["
 FIRST=true
 while true; do
-    read -rp "User ID (or press Enter to finish): " UID
-    [[ -z "$UID" ]] && break
+    read -rp "User ID (or press Enter to finish): " TG_UID
+    [[ -z "$TG_UID" ]] && break
     if [[ "$FIRST" == true ]]; then
-        ALLOWED_IDS+="\"${UID}\""
+        ALLOWED_IDS+="\"${TG_UID}\""
         FIRST=false
     else
-        ALLOWED_IDS+=", \"${UID}\""
+        ALLOWED_IDS+=", \"${TG_UID}\""
     fi
 done
 ALLOWED_IDS+="]"
