@@ -9,12 +9,12 @@ Each client gets their own Nimmit instance — an AI agent that builds webapps, 
 ## One-command install
 
 ```bash
-curl -fsSL https://install.nimmit.ai | bash -s -- --name "Nimmit" --org "Your Company"
+curl -fsSL https://install.koompi.ai | bash -s -- --name "Nimmit" --org "Your Company"
 ```
 
 Or with a bot token:
 ```bash
-curl -fsSL https://install.nimmit.ai | bash -s -- --name "Atlas" --org "Acme Corp" --token "123456:ABC..."
+curl -fsSL https://install.koompi.ai | bash -s -- --name "Atlas" --org "Acme Corp" --token "123456:ABC..."
 ```
 
 ## What clients get
@@ -50,6 +50,7 @@ curl -fsSL https://install.nimmit.ai | bash -s -- --name "Atlas" --org "Acme Cor
 ```
 koompi-nimmit/
 ├── install.sh               # One-command setup
+├── brain/                   # AI team brain template (SOUL, agents, departments, memory)
 ├── config/                  # Agent configuration templates
 ├── skills/                  # Client-facing skills
 ├── templates/               # App templates
