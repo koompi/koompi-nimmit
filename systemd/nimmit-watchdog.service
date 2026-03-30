@@ -1,0 +1,14 @@
+[Unit]
+Description=%i Watchdog — Health Monitor with Telegram Alerts
+After=network.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/.nimmit
+Environment=PATH=%h/.nvm/versions/node/%n/bin:%h/.bun/bin:/usr/local/bin:/usr/bin:/bin
+EnvironmentFile=%h/.nimmit/.env
+ExecStart=/bin/bash -c 'openclaw healthcheck 2>/dev/null || echo "HEALTH_CHECK_FAILED $(date)"'
+TimeoutStartSec=30
+
+[Install]
+WantedBy=default.target

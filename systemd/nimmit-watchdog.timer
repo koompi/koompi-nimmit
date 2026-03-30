@@ -1,0 +1,9 @@
+[Unit]
+Description=%i Watchdog — 5 Minute Health Check Timer
+
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=5min
+
+[Install]
+WantedBy=timers.target

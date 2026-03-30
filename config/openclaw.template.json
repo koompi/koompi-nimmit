@@ -1,17 +1,33 @@
 {
   "meta": {
-    "lastTouchedVersion": "1.0.0",
-    "lastTouchedAt": "{{TIMESTAMP_ISO}}"
+    "lastTouchedVersion": "1.0.0"
+  },
+  "browser": {
+    "enabled": true,
+    "executablePath": "/usr/bin/chromium",
+    "noSandbox": true,
+    "defaultProfile": "openclaw"
   },
   "agents": {
     "defaults": {
       "model": {
         "primary": "zai/glm-5-turbo",
-        "fallback": "github-copilot/gpt-5.3-codex"
+        "fallbacks": [
+          "github-copilot/claude-sonnet-4.6"
+        ]
       },
-      "imageModel": "google/gemini-3.1-pro",
-      "imageGenerationModel": {
-        "primary": "openai/dall-e-3"
+      "imageModel": {
+        "primary": "google/gemini-3.1-flash-lite-preview"
+      },
+      "memorySearch": {
+        "provider": "local"
+      },
+      "compaction": {
+        "mode": "safeguard"
+      },
+      "heartbeat": {
+        "every": "30m",
+        "target": "last"
       }
     },
     "list": [
@@ -23,52 +39,73 @@
           "name": "{{AGENT_NAME}}",
           "emoji": "🦅"
         },
-        "tools": {
-          "profile": "full"
+        "subagents": {
+          "allowAgents": ["*"]
         }
       }
     ]
   },
   "tools": {
     "profile": "full",
-    "allowed": ["*"]
+    "fs": {
+      "workspaceOnly": false
+    }
+  },
+  "commands": {
+    "native": "auto",
+    "nativeSkills": "auto",
+    "restart": true
   },
   "channels": {
     "telegram": {
-      "enabled": {{CHANNEL_TELEGRAM}},
-      "botToken": "{{BOT_TOKEN}}",
-      "allowFrom": {{ALLOWED_IDS}},
+      "enabled": true,
+      "dmPolicy": "allowlist",
+      "botToken": "{{TELEGRAM_TOKEN}}",
+      "allowFrom": [],
       "groupPolicy": "allowlist",
-      "features": {
-        "inlineButtons": true,
-        "reactions": "minimal",
-        "voiceMessages": true
-      }
+      "streaming": "partial",
+      "mediaMaxMb": 20
     },
     "discord": {
-      "enabled": {{CHANNEL_DISCORD}},
+      "enabled": false,
       "token": "",
-      "allowFrom": ["*"],
-      "groupPolicy": "open"
+      "groupPolicy": "open",
+      "streaming": "off",
+      "dmPolicy": "open",
+      "allowFrom": ["*"]
     }
-  },
-  "browser": {
-    "enabled": true,
-    "headless": true,
-    "display": ":99",
-    "browserType": "chromium"
-  },
-  "memory": {
-    "enabled": true,
-    "mode": "file",
-    "path": "{{BRAIN_DIR}}/memory"
-  },
-  "mcp": {
-    "servers": {}
   },
   "gateway": {
     "port": 18789,
     "mode": "local",
     "bind": "loopback"
+  },
+  "skills": {
+    "install": {
+      "nodeManager": "bun"
+    }
+  },
+  "plugins": {
+    "allow": [
+      "acpx",
+      "lossless-claw",
+      "memory-lancedb",
+      "telegram"
+    ],
+    "entries": {
+      "acpx": {
+        "enabled": true,
+        "config": {
+          "permissionMode": "approve-all"
+        }
+      },
+      "lossless-claw": {
+        "enabled": true,
+        "config": {}
+      },
+      "memory-lancedb": {
+        "enabled": true
+      }
+    }
   }
 }
