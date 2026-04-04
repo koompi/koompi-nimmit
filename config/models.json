@@ -8,17 +8,31 @@
   },
   "image": {
     "analysis": "google/gemini-3.1-pro",
-    "generation": "openai/dall-e-3"
+    "generation": "google/gemini-3.1-flash-image-preview",
+    "studio": "google/gemini-3-pro-image-preview"
   },
-  "voice": "google/gemini-3.1-pro",
+  "voice": {
+    "fast": "google/gemini-2.5-flash-tts",
+    "high_fidelity": "google/gemini-2.5-pro-tts"
+  },
+  "video": "google/veo-3.1",
+  "music": {
+    "full": "google/lyria-3-pro",
+    "clip": "google/lyria-3-clip"
+  },
+  "deep_research": "google/gemini-3.1-pro",
   "embedding": "text-embedding-3-small",
   "routing": {
-    "description": "zai/glm-5-turbo handles most tasks. Coding tasks route to Copilot sub-agents. Complex multi-file tasks escalate to Claude Code via ACP.",
+    "description": "GLM-5 Turbo handles most tasks. Coding routes to Copilot sub-agents. Complex multi-file tasks escalate to Claude Code via ACP.",
     "rules": [
       { "condition": "task requires coding", "model": "github-copilot/claude-opus-4.6" },
       { "condition": "simple script or config", "model": "github-copilot/gpt-5.3-codex" },
       { "condition": "multi-file refactor or architecture", "model": "claude-code" },
       { "condition": "image analysis", "model": "google/gemini-3.1-pro" },
+      { "condition": "image generation (standard)", "model": "google/gemini-3.1-flash-image-preview" },
+      { "condition": "image generation (studio quality)", "model": "google/gemini-3-pro-image-preview" },
+      { "condition": "deep research", "model": "google/gemini-3.1-pro" },
+      { "condition": "video generation", "model": "google/veo-3.1" },
       { "condition": "default / everything else", "model": "zai/glm-5-turbo" }
     ]
   }

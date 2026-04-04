@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastTouchedVersion": "1.0.0"
+    "lastTouchedVersion": "2.0.0"
   },
   "browser": {
     "enabled": true,
@@ -13,7 +13,8 @@
       "model": {
         "primary": "zai/glm-5-turbo",
         "fallbacks": [
-          "github-copilot/claude-sonnet-4.6"
+          "github-copilot/gpt-5.3-codex",
+          "google/gemini-3.1-pro"
         ]
       },
       "imageModel": {

@@ -5,9 +5,9 @@ set -euo pipefail
 # One-command setup on fresh Ubuntu 22.04+ VPS or KOOMPI Mini (Arch)
 # Usage: bash install.sh "ClientName" --token "BOT_TOKEN" --zai-key "ZAI_KEY"
 
-VERSION="0.1.0"
-INSTALL_DIR="$HOME/.nimmit"
-BRAIN_DIR="$INSTALL_DIR/brain"
+VERSION="2.0.0"
+INSTALL_DIR="$HOME/.openclaw/nimmit"
+BRAIN_DIR="$INSTALL_DIR"
 CONFIG_FILE="$INSTALL_DIR/openclaw.json"
 ENV_FILE="$INSTALL_DIR/.env"
 REPO="rithythul/koompi-nimmit"
@@ -293,6 +293,17 @@ setup_brain() {
 MINIMAL
     fi
 
+    # Claude Code config
+    if [[ -d "$INSTALL_DIR/config/claude-code" ]]; then
+        mkdir -p "$HOME/.claude/rules"
+        cp "$INSTALL_DIR/config/claude-code/CLAUDE.md" "$HOME/.claude/CLAUDE.md" 2>/dev/null
+        cp -r "$INSTALL_DIR/config/claude-code/rules/"* "$HOME/.claude/rules/" 2>/dev/null
+        if [[ -f "$INSTALL_DIR/config/claude-code/settings.json" ]]; then
+            cp "$INSTALL_DIR/config/claude-code/settings.json" "$HOME/.claude/settings.json" 2>/dev/null
+        fi
+        ok "Claude Code config installed (~/.claude/)"
+    fi
+
     # Generate brain files from templates
     for tmpl in "$INSTALL_DIR"/config/*.template.md; do
         [[ -f "$tmpl" ]] || continue
@@ -334,7 +345,7 @@ We are **${AGENT_NAME}** — ${ORG_NAME}'s AI team.
 
 ## Workspace Rules
 
-- Brain files: ${BRAIN_DIR}/
+- Brain files: ${BRAIN_DIR}/ (same dir)
 - Code projects: ~/workspace/<project-name>/
 - Secrets: ~/.secrets/ (never in brain files)
 - CLI binaries: ~/.local/bin/

@@ -1,0 +1,79 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git *)",
+      "Bash(bun *)",
+      "Bash(bunx *)",
+      "Bash(cargo *)",
+      "Bash(rustc *)",
+      "Bash(python *)",
+      "Bash(uv *)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(wc *)",
+      "Bash(find *)",
+      "Bash(grep *)",
+      "Bash(rg *)",
+      "Bash(fd *)",
+      "Bash(tree *)",
+      "Bash(mkdir *)",
+      "Bash(cp *)",
+      "Bash(mv *)",
+      "Bash(touch *)",
+      "Bash(chmod *)",
+      "Bash(diff *)",
+      "Bash(echo *)",
+      "Bash(which *)",
+      "Bash(file *)",
+      "Bash(date *)",
+      "Bash(whoami *)",
+      "Bash(pwd)",
+      "Bash(gh *)",
+      "Bash(docker *)",
+      "Bash(just *)",
+      "Bash(make *)",
+      "Bash(wget *)",
+      "Bash(curl *)",
+      "Bash(jq *)",
+      "Edit(*)",
+      "Write(*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ \"$TOOL_NAME\" = \"Write\" ] || [ \"$TOOL_NAME\" = \"Edit\" ]; then f=\"$TOOL_INPUT_FILE\"; if echo \"$f\" | grep -qE '\\.(ts|tsx)$' && [ -f \"$f\" ]; then bunx tsc --noEmit --pretty 2>&1 | head -20; fi; fi",
+            "matcher": "Write|Edit"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ \"$TOOL_NAME\" = \"Bash\" ] && echo \"$TOOL_INPUT\" | grep -qE '(bun test|cargo test|pytest)'; then echo '✅ Tests ran.'; fi",
+            "matcher": "Bash"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "STAGED=$(git diff --cached --stat 2>/dev/null); if [ -n \"$STAGED\" ]; then echo \"{\\\"additionalContext\\\": \\\"Staged changes:\\n$STAGED\\\"}\"; fi",
+            "async": true
+          }
+        ]
+      }
+    ]
+  }
+}
