@@ -448,6 +448,46 @@ EOF
     systemctl --user enable openclaw.service
     ok "openclaw.service enabled"
 
+    # OpenClaw Auto-Update
+    cat > "$SVC_DIR/openclaw-update.service" <<EOF
+[Unit]
+Description=OpenClaw Auto-Update
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+Environment=PATH=${ENV_PATH}
+ExecStart=/bin/bash -c '\
+  BEFORE=\$(bun pm ls -g 2>/dev/null | grep openclaw | head -1); \
+  bun install -g openclaw 2>/dev/null; \
+  AFTER=\$(bun pm ls -g 2>/dev/null | grep openclaw | head -1); \
+  if [ "\$BEFORE" != "\$AFTER" ]; then \
+    echo "OpenClaw updated: \$BEFORE -> \$AFTER"; \
+    systemctl --user restart openclaw.service; \
+  else \
+    echo "OpenClaw already up to date: \$BEFORE"; \
+  fi'
+StandardOutput=journal
+StandardError=journal
+EOF
+
+    cat > "$SVC_DIR/openclaw-update.timer" <<EOF
+[Unit]
+Description=OpenClaw Auto-Update — Every 6 Hours
+
+[Timer]
+OnBootSec=10min
+OnUnitActiveSec=6h
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+EOF
+    systemctl --user daemon-reload
+    systemctl --user enable openclaw-update.timer
+    ok "openclaw-update.timer enabled (every 6h, auto-restart on update)"
+
     # Watchdog
     cat > "$SVC_DIR/${SLUG}-watchdog.service" <<EOF
 [Unit]
@@ -516,7 +556,8 @@ start_services() {
     fi
 
     systemctl --user start "${SLUG}-watchdog.timer" 2>/dev/null || true
-    ok "Watchdog timer started"
+    systemctl --user start openclaw-update.timer 2>/dev/null || true
+    ok "Watchdog + auto-update timers started"
 }
 
 # ─── Git init ──────────────────────────────────────────────────────────
