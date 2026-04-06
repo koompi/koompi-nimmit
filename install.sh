@@ -10,7 +10,7 @@ set -euo pipefail
 # Non-interactive (CI/automation):
 #   bash install.sh --non-interactive --name "Atlas" --org "Acme" --token "123:ABC..."
 
-VERSION="3.1.0"
+VERSION="3.2.0"
 REPO="koompi/koompi-nimmit"
 BRANCH="master"
 
@@ -33,25 +33,36 @@ step()  { echo -e "\n${BOLD}${CYAN}>>>>${NC} ${BOLD}$*${NC}"; }
 
 # ─── Prompt helpers ────────────────────────────────────────────────────
 
+# When piped from curl, stdin is the script. Reattach to terminal for prompts.
+if [[ ! -t 0 ]] && [[ -e /dev/tty ]]; then
+    exec 3</dev/tty  # open fd 3 from terminal
+    HAS_TTY=true
+elif [[ -t 0 ]]; then
+    exec 3<&0         # fd 3 = stdin (already a terminal)
+    HAS_TTY=true
+else
+    HAS_TTY=false
+fi
+
 # ask "prompt" "default" → sets REPLY
 ask() {
     local prompt="$1" default="${2:-}"
     if [[ -n "$default" ]]; then
-        echo -en "  ${BOLD}${prompt}${NC} ${DIM}[${default}]${NC}: "
-        read -r REPLY
+        echo -en "  ${BOLD}${prompt}${NC} ${DIM}[${default}]${NC}: " >&2
+        read -r REPLY <&3
         REPLY="${REPLY:-$default}"
     else
-        echo -en "  ${BOLD}${prompt}${NC}: "
-        read -r REPLY
+        echo -en "  ${BOLD}${prompt}${NC}: " >&2
+        read -r REPLY <&3
     fi
 }
 
 # ask_secret "prompt" → sets REPLY (input hidden)
 ask_secret() {
     local prompt="$1"
-    echo -en "  ${BOLD}${prompt}${NC}: "
-    read -rs REPLY
-    echo ""
+    echo -en "  ${BOLD}${prompt}${NC}: " >&2
+    read -rs REPLY <&3
+    echo "" >&2
 }
 
 # ask_yn "prompt" "default y/n" → returns 0 for yes, 1 for no
@@ -59,8 +70,8 @@ ask_yn() {
     local prompt="$1" default="${2:-y}"
     local hint="Y/n"
     [[ "$default" == "n" ]] && hint="y/N"
-    echo -en "  ${BOLD}${prompt}${NC} ${DIM}[${hint}]${NC}: "
-    read -r REPLY
+    echo -en "  ${BOLD}${prompt}${NC} ${DIM}[${hint}]${NC}: " >&2
+    read -r REPLY <&3
     REPLY="${REPLY:-$default}"
     [[ "$REPLY" =~ ^[Yy] ]]
 }
@@ -68,8 +79,8 @@ ask_yn() {
 # ask_choice "prompt" "opt1|opt2|opt3" "default" → sets REPLY
 ask_choice() {
     local prompt="$1" options="$2" default="$3"
-    echo -e "  ${BOLD}${prompt}${NC} ${DIM}(${options})${NC} ${DIM}[${default}]${NC}: "
-    read -r REPLY
+    echo -e "  ${BOLD}${prompt}${NC} ${DIM}(${options})${NC} ${DIM}[${default}]${NC}: " >&2
+    read -r REPLY <&3
     REPLY="${REPLY:-$default}"
 }
 
@@ -431,9 +442,15 @@ setup_brain() {
     step "Setting up ${AGENT_NAME}'s brain"
 
     if [[ -d "$BRAIN_DIR" ]]; then
-        warn "$BRAIN_DIR exists. Backing up..."
-        mv "$BRAIN_DIR" "${BRAIN_DIR}.bak.$(date +%s)"
+        local BACKUP="${BRAIN_DIR}.bak.$(date +%s)"
+        warn "$BRAIN_DIR exists. Backing up to ${BACKUP}..."
+        cp -a "$BRAIN_DIR" "$BACKUP" || die "Failed to backup existing brain. Check permissions."
+        rm -rf "$BRAIN_DIR"
+        ok "Existing brain backed up"
     fi
+
+    # Ensure parent directory exists
+    mkdir -p "$(dirname "$BRAIN_DIR")"
 
     # Clone repo to temp dir
     local TMPDIR
@@ -813,8 +830,8 @@ finalize() {
 # ─── Main ──────────────────────────────────────────────────────────────
 
 main() {
-    # Interactive wizard (unless --non-interactive or piped with args)
-    if [[ "$NON_INTERACTIVE" == false && -t 0 ]]; then
+    # Interactive wizard (unless --non-interactive or no terminal available)
+    if [[ "$NON_INTERACTIVE" == false && "$HAS_TTY" == true ]]; then
         interactive_setup
     fi
 
