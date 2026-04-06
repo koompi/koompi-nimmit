@@ -6,15 +6,17 @@
 
 Each client gets their own Nimmit instance — an AI agent that builds webapps, manages databases, deploys code, and runs operations 24/7.
 
-## One-command install
+## Install
 
+Interactive — walks you through everything:
 ```bash
-curl -fsSL https://install.koompi.ai | bash -s -- --name "Nimmit" --org "Your Company"
+curl -fsSL https://nimmit.koompi.ai | bash
 ```
 
-Or with a bot token:
+Non-interactive (CI/automation):
 ```bash
-curl -fsSL https://install.koompi.ai | bash -s -- --name "Atlas" --org "Acme Corp" --token "123456:ABC..."
+curl -fsSL https://nimmit.koompi.ai | bash -s -- --non-interactive \
+  --name "Atlas" --org "Acme Corp" --token "123:ABC..." --google-key "AIza..."
 ```
 
 ## What clients get
