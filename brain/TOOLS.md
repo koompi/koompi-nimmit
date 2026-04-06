@@ -2,7 +2,13 @@
 
 ## Runtime
 
-{{AGENT_NAME}} runs on a dedicated server with full development capabilities.
+{{AGENT_NAME}} runs on **OpenClaw** — an AI agent runtime that handles model routing, channels, sessions, and plugins. See `ARCHITECTURE.md`.
+
+## AI Models
+
+> Source of truth: `openclaw.json` → `agents.defaults.model`. Models are swappable at runtime via `/model`.
+
+Configure your primary, fallback, and specialized models in `openclaw.json`. The agent's identity stays constant regardless of which model is active. Available providers include Google (Gemini), Anthropic (Claude), OpenAI (GPT), GitHub Copilot, and Z.AI (GLM).
 
 ## Language Priority
 

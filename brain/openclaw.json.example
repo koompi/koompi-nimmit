@@ -18,12 +18,25 @@
     "root": "./",
     "soul": "SOUL.md",
     "identity": "IDENTITY.md",
+    "architecture": "ARCHITECTURE.md",
     "agents": "AGENTS.md",
     "tools": "TOOLS.md",
     "heartbeat": "HEARTBEAT.md",
     "workflow": "WORKFLOW.md",
     "memory": "memory/",
     "topics": "topics/"
+  },
+  "model": {
+    "primary": "google/gemini-3.1-pro-preview",
+    "fallbacks": [
+      "google/gemini-3-flash-preview",
+      "github-copilot/claude-sonnet-4.6"
+    ],
+    "image": "google/gemini-3.1-flash-image-preview",
+    "coding": {
+      "copilot": ["github-copilot/claude-opus-4.6", "github-copilot/gpt-5.4"],
+      "deep": "claude-code-acp"
+    }
   },
   "integrations": {
     "messaging": {

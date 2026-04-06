@@ -33,8 +33,9 @@ curl -fsSL https://install.koompi.ai | bash -s -- --name "Atlas" --org "Acme Cor
 | Runtime | OpenClaw |
 | Webapp framework | Next.js 16+ |
 | Database/Auth/Storage | Supabase |
-| Primary model | zai/glm-5-turbo |
-| Coding model | Claude Code via Copilot sub-agent |
+| Primary model | Configurable (default: Gemini 3.1 Pro) |
+| Model routing | OpenClaw — swappable at runtime via /model |
+| Coding model | Claude Code (ACP) + Copilot sub-agents |
 | Primary channel | Telegram |
 | Language | TypeScript strict |
 | Package manager | Bun (never npm) |
@@ -50,7 +51,13 @@ curl -fsSL https://install.koompi.ai | bash -s -- --name "Atlas" --org "Acme Cor
 ```
 koompi-nimmit/
 ├── install.sh               # One-command setup
-├── brain/                   # AI team brain template (SOUL, agents, departments, memory)
+├── brain/                   # AI team brain template
+│   ├── ARCHITECTURE.md      # Runtime self-awareness (identity ≠ model)
+│   ├── SOUL.md              # Personality, rules, values
+│   ├── IDENTITY.md          # Name, role, what you are
+│   ├── AGENTS.md            # Departments, routing, startup
+│   ├── TOOLS.md             # Capabilities, model config
+│   └── ...                  # Memory, topics, heartbeat, etc.
 ├── config/                  # Agent configuration templates
 ├── skills/                  # Client-facing skills
 ├── templates/               # App templates
