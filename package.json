@@ -1,6 +1,6 @@
 {
   "name": "@koompi/nimmit",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "AI assistant skill packs and OpenClaw plugin — install an AI worker, teach it your job, let it work",
   "keywords": [
     "ai",
@@ -20,7 +20,7 @@
   },
   "type": "module",
   "bin": {
-    "nimmit": "./bin/nimmit.js"
+    "nimmit": "bin/nimmit.js"
   },
   "main": "./dist/plugin.js",
   "exports": {
