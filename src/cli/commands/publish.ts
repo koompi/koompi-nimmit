@@ -46,7 +46,7 @@ export function registerPublishCommand(program: Command): void {
         // Check clawhub CLI is available (skip for dry-run)
         if (!opts.dryRun) {
           try {
-            await exec("clawhub", ["--version"]);
+            await exec("clawhub", ["--cli-version"]);
           } catch {
             console.error(
               "  clawhub CLI not found. Install: npm install -g clawhub",
@@ -60,9 +60,8 @@ export function registerPublishCommand(program: Command): void {
             "/SKILL.md",
             "",
           );
-          const slug = `koompi/${pack.id}`;
+          const slug = `koompi-${pack.id}`;
           const args = [
-            "skill",
             "publish",
             skillDir,
             "--slug",
@@ -70,11 +69,11 @@ export function registerPublishCommand(program: Command): void {
           ];
 
           if (opts.bump) {
-            args.push("--bump", opts.bump);
+            args.push("--version", opts.bump);
           }
 
           if (opts.dryRun) {
-            console.log(`  [dry-run] ${slug}`);
+            console.log(`  [dry-run] koompi-${pack.id}`);
             published++;
             continue;
           }
@@ -82,12 +81,12 @@ export function registerPublishCommand(program: Command): void {
           try {
             const { stdout } = await exec("clawhub", args);
             if (stdout.trim()) console.log(`  ${stdout.trim()}`);
-            console.log(`  Published: ${slug}`);
+            console.log(`  Published: koompi-${pack.id}`);
             published++;
           } catch (e) {
             const msg =
               e instanceof Error ? e.message : String(e);
-            console.error(`  Failed: ${slug} — ${msg}`);
+            console.error(`  Failed: koompi-${pack.id} — ${msg}`);
             failed++;
           }
         }
