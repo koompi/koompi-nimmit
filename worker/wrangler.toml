@@ -1,0 +1,8 @@
+name = "nimmit-installer"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+account_id = "da8bbdaa7d0e62638eba348dfabde0ef"
+
+routes = [
+  { pattern = "nimmit.koompi.ai/*", zone_id = "610e844d589bf24892c12e1bd3cf5626" }
+]
