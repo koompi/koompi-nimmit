@@ -125,6 +125,7 @@ while [[ $# -gt 0 ]]; do
         --mini)             IS_MINI=true; shift ;;
         --divisions)        DIVISIONS=true; shift ;;
         --non-interactive)  NON_INTERACTIVE=true; shift ;;
+        --uninstall)        uninstall; exit 0 ;;
         -h|--help)
             cat <<HELP
 Usage: bash install.sh [OPTIONS]
@@ -149,6 +150,7 @@ Options:
   --mini                  KOOMPI Mini mode (autologin)
   --divisions             Enable 4-division mode
   --non-interactive       Skip all prompts (use flags only)
+  --uninstall             Remove koompi-nimmit installation
   -h, --help              Show this help
 HELP
             exit 0 ;;
@@ -824,6 +826,139 @@ finalize() {
     echo -e "    ${CYAN}cat ${BRAIN_DIR}/ARCHITECTURE.md${NC}  ${DIM}# How it works${NC}"
     echo ""
     echo -e "  ${DIM}Learn more: https://github.com/koompi/koompi-nimmit${NC}"
+    echo ""
+}
+
+# ─── Uninstall ────────────────────────────────────────────────────────────
+
+uninstall() {
+    echo -e "${BOLD}${RED}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${BOLD}${RED}  Uninstall koompi-nimmit${NC}"
+    echo -e "${BOLD}${RED}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo ""
+    echo -e "${YELLOW}This will:${NC}"
+    echo -e "  • Stop and disable all systemd services"
+    echo -e "  • Remove OpenClaw configuration"
+    echo -e "  • Delete the brain directory (~/.openclaw/<slug>/)"
+    echo -e "  • Keep your .env file (for backup) unless you confirm deletion"
+    echo ""
+
+    if ! ask_yn "Continue with uninstall?" "n"; then
+        echo -e "\n  ${DIM}Uninstall cancelled.${NC}\n"
+        exit 0
+    fi
+
+    echo ""
+
+    # Detect existing installations
+    local FOUND=false
+    local DIR="$HOME/.openclaw"
+    if [[ -d "$DIR" ]]; then
+        echo -e "${CYAN}Found installations:${NC}"
+        for d in "$DIR"/*/; do
+            if [[ -d "$d" ]]; then
+                local slug=$(basename "$d")
+                echo -e "  • ${BOLD}$slug${NC} ($d)"
+                FOUND=true
+            fi
+        done
+    fi
+
+    if [[ "$FOUND" == false ]]; then
+        warn "No koompi-nimmit installations found."
+        exit 0
+    fi
+
+    echo ""
+    ask "Enter slug to uninstall (or 'all')" ""
+    local SLUG="$REPLY"
+    [[ "$SLUG" == "all" ]] && SLUG="*"
+
+    echo ""
+    step "Stopping services"
+
+    # Stop and disable services for each slug
+    for brain_dir in $DIR/$SLUG; do
+        if [[ ! -d "$brain_dir" ]]; then continue; fi
+
+        local name=$(basename "$brain_dir")
+
+        systemctl --user stop "${name}-watchdog.timer" 2>/dev/null || true
+        systemctl --user disable "${name}-watchdog.timer" 2>/dev/null || true
+        systemctl --user stop openclaw-update.timer 2>/dev/null || true
+        systemctl --user disable openclaw-update.timer 2>/dev/null || true
+        systemctl --user stop openclaw.service 2>/dev/null || true
+        systemctl --user disable openclaw.service 2>/dev/null || true
+        systemctl --user stop xvfb.service 2>/dev/null || true
+        systemctl --user disable xvfb.service 2>/dev/null || true
+
+        ok "Stopped services for $name"
+    done
+
+    systemctl --user daemon-reload
+    echo ""
+
+    step "Removing service files"
+
+    local SVC_DIR="$HOME/.config/systemd/user"
+    rm -f "$SVC_DIR/xvfb.service"
+    rm -f "$SVC_DIR/openclaw.service"
+    rm -f "$SVC_DIR/openclaw-update.service"
+    rm -f "$SVC_DIR/openclaw-update.timer"
+    for brain_dir in $DIR/$SLUG; do
+        if [[ -d "$brain_dir" ]]; then
+            local name=$(basename "$brain_dir")
+            rm -f "$SVC_DIR/${name}-watchdog.service"
+            rm -f "$SVC_DIR/${name}-watchdog.timer"
+        fi
+    done
+
+    ok "Service files removed"
+    echo ""
+
+    step "Removing brain directories"
+
+    for brain_dir in $DIR/$SLUG; do
+        if [[ ! -d "$brain_dir" ]]; then continue; fi
+
+        local name=$(basename "$brain_dir")
+        local env_file="$brain_dir/.env"
+
+        # Backup .env if it contains secrets
+        if [[ -f "$env_file" ]]; then
+            local backup="${env_file}.backup.$(date +%s)"
+            cp "$env_file" "$backup"
+            ok "Backed up .env to $backup"
+        fi
+
+        rm -rf "$brain_dir"
+        ok "Removed $name"
+    done
+
+    echo ""
+
+    # Ask about removing OpenClaw itself
+    if ask_yn "Also remove OpenClaw globally?" "n"; then
+        step "Removing OpenClaw"
+        bun pm rm -g openclaw 2>/dev/null || true
+        ok "OpenClaw removed"
+    fi
+
+    echo ""
+
+    # Ask about removing config
+    if ask_yn "Remove global config at ~/.openclaw/?" "n"; then
+        rm -rf "$HOME/.openclaw"
+        ok "Global config removed"
+    fi
+
+    echo ""
+    echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${GREEN}  Uninstall complete${NC}"
+    echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo ""
+    echo -e "  ${DIM}Note: .env backup files were preserved.${NC}"
+    echo -e "  ${DIM}To remove them: rm ~/.openclaw/*/.env.backup.*${NC}"
     echo ""
 }
 

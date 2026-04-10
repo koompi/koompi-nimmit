@@ -6,6 +6,37 @@
 
 Each client gets their own Nimmit instance — an AI agent that builds webapps, manages databases, deploys code, and runs operations 24/7.
 
+## Quick Start
+
+After installing, your AI agent is ready to work:
+
+### 1. Start chatting
+Send a message to your Telegram bot:
+```
+/build a todo app with next.js
+```
+
+### 2. Check status
+```bash
+# Is the agent running?
+systemctl --user status openclaw
+
+# View live logs
+journalctl --user -u openclaw -f
+```
+
+### 3. Change models (on the fly)
+In chat:
+```
+/model opus
+```
+Switches between Claude, Gemini, GPT-4, etc.
+
+### 4. Restart if needed
+```bash
+systemctl --user restart openclaw
+```
+
 ## Install
 
 Interactive — walks you through everything:
@@ -65,6 +96,50 @@ koompi-nimmit/
 ├── templates/               # App templates
 ├── systemd/                 # Service files
 └── README.md
+```
+
+## Screenshots
+
+Coming soon — demo of the agent building a full-stack app in under 2 minutes.
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| Bot doesn't respond | 1. Check service: `systemctl --user status openclaw`<br>2. Check logs: `journalctl --user -u openclaw -n 50`<br>3. Verify bot token in `~/.openclaw/<slug>/.env` |
+| "Permission denied" errors | Run: `loginctl enable-linger $USER` then reboot |
+| Node not found after install | Restart shell or run: `source ~/.bashrc` (nvm needs PATH update) |
+| Port 18789 already in use | Something else is using the gateway port. Check: `lsof -i :18789` |
+| Auto-login not working on Mini | Ensure file is at `/etc/systemd/system/getty@tty1.service.d/override.conf` |
+| Agent forgets context | Check disk space: `df -h ~/.openclaw/`. Memory fills up over time. |
+| Model returns errors | Verify API keys in `.env` file. Try `/model <different-model>` in chat. |
+| Services stop on logout | Run: `sudo loginctl enable-linger $USER` |
+
+### Get help
+- Check logs: `journalctl --user -u openclaw -b`
+- Open an issue: https://github.com/koompi/koompi-nimmit/issues
+- KOOMPI support: support@koompi.ai
+
+## Upgrading
+
+Your agent auto-updates OpenClaw every 6 hours via `openclaw-update.timer`.
+
+### Manual upgrade
+```bash
+bun install -g openclaw
+systemctl --user restart openclaw
+```
+
+### Upgrade brain template
+```bash
+cd ~/.openclaw/<slug>
+git pull origin master
+systemctl --user restart openclaw
+```
+
+### Check version
+```bash
+openclaw --version
 ```
 
 ## License

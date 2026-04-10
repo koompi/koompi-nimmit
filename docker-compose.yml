@@ -1,0 +1,40 @@
+# Docker Compose for local testing of koompi-nimmit
+# This is for development/testing only, not for production use
+
+services:
+  # Optional: Local Supabase for database testing
+  supabase:
+    image: supabase/supabase:latest
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "54322:5432"
+    volumes:
+      - supabase_data:/var/lib/postgresql/data
+
+  # Optional: Redis for caching (if needed)
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  # Development shell with all dependencies
+  dev-shell:
+    image: node:22-bullseye
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+    environment:
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+    command: sleep infinity
+    # Install dependencies manually:
+    # docker-compose run dev-shell bash
+    # curl -fsSL https://bun.sh/install | bash
+    # bun install -g openclaw
+
+volumes:
+  supabase_data:
+  redis_data:
