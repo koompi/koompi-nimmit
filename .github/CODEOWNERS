@@ -1,0 +1,14 @@
+# CODEOWNERS — Required reviewers for sensitive files
+
+# Core personality and identity — only Rithy can approve
+/brain/SOUL.md @rithythul
+/brain/IDENTITY.md @rithythul
+
+# Approval gates and security — Rithy + Hangsia
+/brain/AGENTS.md @rithythul
+
+# Brain evolution system
+/brain/EVOLUTION.md @rithythul
+
+# API key store — never merge without review
+/.keys/ @rithythul
