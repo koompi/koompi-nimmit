@@ -1,6 +1,6 @@
 # Nimmit Brain
 
-> Deploy an AI team that runs your business. Install in 5 minutes, customize in 5 more.
+> Deploy an AI team that runs your business. Install in 5 minutes, customize in 5 more. Gets smarter every week.
 
 **Nimmit Brain** is the brain template behind [Nimmit Cloud](https://nimmit.koompi.cloud) and [Nimmit Mini](https://koompi.com/nimmit). It's the open-source template for an autonomous AI operations team — the same one KOOMPI uses to run its companies.
 
@@ -27,6 +27,59 @@ Not a chatbot. Not a coding tool. An AI teammate that handles ops, growth, finan
 
 **This repo is the brain template** shared by all three. Install it locally, customize it, or contribute to the open-source project.
 
+---
+
+## 🧠 Self-Evolution — The Flywheel
+
+Nimmit doesn't just work for you. It learns from you. And from every other Nimmit user.
+
+```
+You work with Nimmit daily
+        │
+        ▼
+Nimmit learns: your corrections, patterns, domain knowledge
+        │
+        ▼
+Sunday: extracts generic lessons, strips ALL personal data
+        │
+        ▼
+POSTs to brain.nimmit.xyz/api/v1/brain/lessons
+        │
+        ▼
+API validates → blocks personal data → creates PR to this repo
+        │
+        ▼
+Community lessons reviewed → merged into shared brain
+        │
+        ▼
+All Nimmit instances pull updates → everyone gets smarter
+        │
+        ▼
+Repeat. Every user teaches. Every user learns.
+```
+
+### Your Privacy, Our Promise
+
+| What stays private | What gets shared |
+|---|---|
+| Your conversations | Generic lessons (no names, no data) |
+| Your files | Workflow patterns |
+| Your business details | Domain knowledge (generalized) |
+| Your identity | Anti-patterns ("don't do X") |
+
+The API enforces this at the server level — emails, phone numbers, IPs, tokens, and personal names are automatically rejected.
+
+### How It Works Technically
+
+- **No GitHub account needed** — lessons are submitted via API
+- **No manual setup** — the brain template handles everything automatically
+- **Privacy double-check** — client-side generalization + server-side validation
+- **Weekly cycle** — every Sunday (random hour), your Nimmit pushes lessons and pulls others'
+
+See [`brain/EVOLUTION.md`](brain/EVOLUTION.md) for the full self-improvement system.
+
+---
+
 ## Quick Start
 
 ```bash
@@ -38,6 +91,7 @@ curl -fsSL https://raw.githubusercontent.com/koompi/nimmit-brain/master/install.
 | Component | Description |
 |-----------|-------------|
 | **Brain template** | `brain/` — Personality, identity, memory, roles, company context |
+| **Evolution system** | `brain/EVOLUTION.md` — Auto-learn, share, pull improvements |
 | **Setup wizard** | `install.sh` — One-command deploy with bot token + API key |
 | **Config templates** | `config/` — OpenClaw config, model routing, API settings |
 | **Skills** | `skills/` — Pre-built capabilities (cloud, ecommerce, auth, payments, docs) |
@@ -62,6 +116,9 @@ If complex: spawns sub-agents (coding, research, design)
         │
         ▼
 Delivers result → logs outcome → gets smarter
+        │
+        ▼
+Sunday: shares lessons with the community
 ```
 
 **No dashboards. No Jira. No standup meetings. Just message, get work done.**
@@ -108,7 +165,7 @@ brain/memory/
 └── working/        # Current state
 ```
 
-Memory compounds. The longer your team runs, the more context it has.
+Memory compounds. The longer your team runs, the more context it has. And with self-evolution, the more users run Nimmit, the smarter yours gets.
 
 ## Tech Stack
 
@@ -117,7 +174,7 @@ Memory compounds. The longer your team runs, the more context it has.
 | Runtime | [OpenClaw](https://github.com/openclaw/openclaw) (MIT) |
 | Coding agents | Claude Code, Copilot sub-agents |
 | Models | Claude, GPT, Gemini, GLM (swappable) |
-| Database | Supabase (PostgreSQL) or Cloudflare D1 (SQLite) |
+| Evolution API | [brain.nimmit.xyz](https://brain.nimmit.xyz) (Cloudflare Workers) |
 | Channels | Telegram, Discord, WhatsApp, Slack |
 | Language | TypeScript strict |
 | Package manager | Bun |
@@ -128,19 +185,23 @@ Memory compounds. The longer your team runs, the more context it has.
 nimmit-brain/
 ├── install.sh               # One-command setup
 ├── MIGRATION-GUIDE.md       # Customize for your company
+├── CONTRIBUTING.md          # How to contribute lessons (privacy-first)
 ├── brain/                   # AI team brain template
 │   ├── SOUL.md              # Personality and communication
 │   ├── IDENTITY.md          # Who you are
 │   ├── AGENTS.md            # Roles and session protocol
+│   ├── EVOLUTION.md         # Self-improvement system
 │   ├── COMPANY.md           # Business context (fill in yours)
 │   ├── USER.md              # Founder profile (fill in yours)
 │   ├── TOOLS.md             # Capabilities and model config
-│   ├── WORKFLOW.md          # Memory and task system
+│   ├── WORKFLOW.md          # Memory, task system, evolution triggers
 │   ├── HEARTBEAT.md         # Scheduled tasks and health checks
 │   ├── BOOTSTRAP.md         # First-run setup
 │   ├── MEMORY.md            # Memory index
 │   ├── ARCHITECTURE.md      # Runtime self-awareness
 │   ├── STANDARDS.md         # Quality and process standards
+│   ├── VERSION              # Brain version (semver)
+│   ├── CHANGELOG.md         # Version history
 │   ├── agents/              # Role routing and roster
 │   ├── memory/              # Memory directories
 │   ├── projects/            # Active project tracking
@@ -152,6 +213,34 @@ nimmit-brain/
 ├── systemd/                 # Service files
 └── README.md
 ```
+
+## Brain Lesson API
+
+The API that powers self-evolution. No GitHub account needed.
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/v1/brain/lessons` | Submit lessons from your Nimmit |
+| `GET` | `/api/v1/brain/lessons` | Fetch community lessons |
+| `GET` | `/api/v1/brain/health` | API health check |
+
+```bash
+# Submit a lesson
+curl -X POST https://brain.nimmit.xyz/api/v1/brain/lessons \
+  -H "Content-Type: application/json" \
+  -d '{
+    "brainVersion": "2.1.0",
+    "lessons": [{
+      "category": "procedural",
+      "name": "Match User Language",
+      "trigger": "User switches languages mid-conversation",
+      "lesson": "Detect the language of each message and respond in the same language.",
+      "source": "Learned from bilingual user interactions"
+    }]
+  }'
+```
+
+Source code: [koompi/nimmit-brain-api](https://github.com/koompi/nimmit-brain-api)
 
 ## Requirements
 
@@ -169,6 +258,7 @@ nimmit-brain/
 | Port 18789 in use | `lsof -i :18789` |
 | Agent forgets context | Check disk: `df -h ~/.openclaw/` |
 | Model errors | Verify API keys. Try `/model <different>` in chat |
+| Lessons not pushing | Check `brain/EVOLUTION.md` — cron jobs may need setup |
 
 ### Get help
 - Issues: https://github.com/koompi/nimmit-brain/issues
@@ -186,20 +276,21 @@ Brain updates are pulled from this repo. Your customizations are never overwritt
 
 ## Contributing
 
-We ship Nimmit Brain as open-source (Apache 2.0). Contributions welcome:
-- New skills for the `skills/` directory
-- Industry-specific templates
-- Documentation improvements
-- Bug fixes
+Two ways to contribute:
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+1. **Just use Nimmit** — your instance auto-shares lessons every Sunday. Zero effort.
+2. **Developer** — fork the repo, edit, open a PR. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+Your privacy is guaranteed: only generic lessons are shared. Never personal data.
 
 ## Roadmap
 
+- [x] Self-evolution system — auto-learn, share, pull community lessons
+- [x] Brain Lesson API — no GitHub account needed
+- [x] Privacy enforcement — server-side personal data blocking
 - [ ] Nimmit Cloud MVP — hosted SaaS, sign up in 2 minutes
 - [ ] Web setup wizard — replace CLI with web UI
 - [ ] Industry templates — agency, SaaS, ecommerce, restaurant
-- [ ] Brain export from running instance
 - [ ] Skill marketplace
 - [ ] Stripe billing integration
 
