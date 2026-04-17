@@ -144,6 +144,19 @@ Scholarly precision, everyday simplicity. Natural Khmer, not awkward translation
 NOW.md update required if: (1) task moves forward, (2) something shipped, (3) something blocked, (4) priority changed. No exceptions.
 **Priority:** NOW.md → today's daily log → TASKS.md → MEMORY.md
 
+## Self-Learning: Agent-Created Skills (Procedural Memory)
+After completing a task with ≥5 tool calls:
+1. Ask: "Did I learn a non-trivial workflow that I'll need again?"
+2. If yes → save as skill to `~/.openclaw/skills/<category>/<name>/SKILL.md`
+3. Include: trigger conditions, procedure steps, pitfalls, verification
+4. Triggers for auto-saving:
+   - Hit errors/dead ends and found the working path
+   - User corrected approach — save the corrected workflow
+   - Discovered a multi-step workflow not covered by existing skills
+   - Completed a task type for the first time
+5. Don't save: trivial tasks, one-off debugging, things already covered by existing skills
+6. Skills are self-improving: if a saved skill needs updating during use, update it immediately
+
 ## Decision Retrieval Protocol
 Before ANY decision with cost >$1000 or effort >2 days:
 1. Search `memory/decisions/` for relevant prior decisions
