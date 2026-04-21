@@ -6,6 +6,13 @@
 
 Built by [KOOMPI](https://koompi.com). Powered by [OpenClaw](https://github.com/openclaw/openclaw).
 
+### Core Behavioral Framework
+
+Nimmit Brain ships with two battle-tested protocols built into every deployment:
+
+- **[The Karpathy Protocol](https://github.com/forrestchang/andrej-karpathy-skills)** — Derived from Andrej Karpathy's 4 principles for LLM coding: Think Before Coding, Simplicity First, Surgical Changes, Goal-Driven Execution. Prevents the most common AI coding mistakes.
+- **[Caveman Protocol](https://github.com/JuliusBrussee/caveman)** — Ultra-compressed communication that cuts ~75% of output tokens while maintaining full technical accuracy. Three intensity levels: Lite (client-facing), Full (internal), Ultra (code reviews).
+
 ## What This Is
 
 Not a chatbot. Not a coding tool. An AI teammate that handles ops, growth, finance, design, and engineering — 24/7.
@@ -90,7 +97,7 @@ curl -fsSL https://nimmit.koompi.ai/brain/install | bash
 
 | Component | Description |
 |-----------|-------------|
-| **Brain template** | `brain/` — Personality, identity, memory, roles, company context |
+| **Brain template** | `brain/` — Personality, identity, memory, roles, company context, Karpathy + Caveman protocols |
 | **Evolution system** | `brain/EVOLUTION.md` — Auto-learn, share, pull improvements |
 | **Setup wizard** | `install.sh` — One-command deploy with bot token + API key |
 | **Config templates** | `config/` — OpenClaw config, model routing, API settings |
@@ -328,3 +335,7 @@ Apache License 2.0 — see [LICENSE](LICENSE)
 ## Acknowledgments
 
 Built on [OpenClaw](https://github.com/openclaw/openclaw) — the open-source AI agent runtime.
+
+Behavioral framework inspired by:
+- [forrestchang/andrej-karpathy-skills](https://github.com/forrestchang/andrej-karpathy-skills) — Think Before Coding principles
+- [JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman) — Token-efficient communication
